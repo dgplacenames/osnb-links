@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ScotlandsPlaces URL Converter</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+    pre { background: #f0f0f0; padding: 10px; white-space: pre-wrap; }
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<h2>ScotlandsPlaces → ScotlandsPeople URL Converter</h2>
+
+<label for="input">Paste old URLs here:</label>
+<textarea id="input" placeholder="Paste old URLs here..."></textarea>
+
+<button onclick="convertLinks()">Convert</button>
+
+<h3>Converted URLs:</h3>
+<pre id="output"></pre>
+
+<script>
+  // Global REX ID — assumed same for all
+  const GLOBAL_REX = 'REX01698';
+
+  // County → code (as string)
+  const countyMap = {
+    'wigtownshire':'35',
+    'kirkcudbrightshire':'20',
+    'dumfriesshire':'10',
+    'ayrshire':'3',
+    // Add more counties here
+  };
+
+  function convertLinks() {
+    const input = document.getElementById('input').value.trim();
+    const lines = input.split(/\n+/);
+    const outputLines = [];
+
+    lines.forEach(line => {
+      const match = line.match(/\/([a-z\-]+)-os-name-books-\d{4}-\d{4}\/\1-volume-(\d+)\/(\d+)/i);
+      if (!match) {
+        outputLines.push(`❌ Could not parse: ${line}`);
+        return;
+      }
+
+      const county = match[1].toLowerCase();
+      const volume = parseInt(match[2], 10); // Remove leading zero
+      const page = match[3];
+
+      const code = countyMap[county];
+      if (!code) {
+        outputLines.push(`❌ No mapping found for county: ${county}`);
+        return;
+      }
+
+      const newUrl = `https://www.scotlandspeople.gov.uk/virtual-volumes/volume-images/volume_data-OS1-${code}-${volume}/${GLOBAL_REX}?image_number=${page}`;
+      outputLines.push(newUrl);
+    });
+
+    document.getElementById('output').textContent = outputLines.join('\n');
+  }
+</script>
+
+</body>
+</html>
