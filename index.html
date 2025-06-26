@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ScotlandsPlaces URL Converter</title>
+  <title>OSNB URL Converter</title>
   <style>
     * {
       box-sizing: border-box;
@@ -43,7 +43,7 @@
     
     textarea { 
       width: 100%; 
-      height: 200px; 
+      height: 125px; 
       margin-bottom: 20px;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
@@ -135,9 +135,14 @@
 <body>
 
 <div class="container">
-  <h2>ScotlandsPlaces → ScotlandsPeople URL Converter</h2>
-  
-  <p>I'm halfway through the counties. If the converter isn't working for you, please check back later.</p>
+  <h2>ScotlandsPlaces → Scotland's People OSNB Converter</h2>
+
+  <p>This page converts the old ScotlandsPlaces OSNB urls to the new ScotlandsPeople ones.</p>
+<ul>
+  <li>There shouldn't be a need for this page. Ask Scotland's People to set up redirects for the old links: <a href="https://www.scotlandspeople.gov.uk/contact-us" target="_blank" >scotlandspeople.gov.uk/contact-us</a></li>
+    <li>The Inverness-shire and Ross and Cromarty volumes have been split across urls. The convertor doesn't work for those counties just now.</li>
+    <li>Send a pull request with fixes or improvements: <a href="https://github.com/dgplacenames/osnb-links" target="_blank" >github.com/dgplacenames/osnb-links</a></li>
+</ul>
 
   <label for="input">Paste old URLs here:</label>
   <textarea id="input" placeholder="Paste old URLs here..."></textarea>
@@ -150,26 +155,55 @@
 </div>
 
 <script>
-  // Global REX ID — assumed same for all
   const GLOBAL_REX = 'REX01698';
 
   // County → code (as string)
+  // No 12. inverness-shire is split across 16,17,18 and ross-and-cromarty over 27 and 28
   const countyMap = {
     'wigtownshire':'35',
+    'west-lothian':'34',
+    'sutherland':'33',
+    'stirlingshire':'32',
+    'shetland':'31',
+    'selkirkshire':'30',
+    'roxburghshire':'29',
+    'ross-and-cromarty':'28',
+    'ross-and-cromarty':'27',
+    'renfrewshire':'26',
+    'perthshire':'25',
+    'peeblesshire':'24',
+    'orkney':'23',
+    'nairnshire':'22',
+    'lanarkshire':'21',
     'kirkcudbrightshire':'20',
+    'kincardineshire':'19',
+    'inverness-shire':'18',
+    'inverness-shire':'17',
+    'inverness-shire':'16',
+    'east-lothian':'15',
+    'forfarshire-angus':'14',
+    'fife-and-kinross-shire':'13',
+    'mid-lothian':'11',
     'dumfriesshire':'10',
+    'dunbartonshire':'9',
+    'clackmannanshire':'8',
+    'caithness':'7',
+    'buteshire':'6',
+    'berwickshire':'5',
+    'banffshire':'4',
     'ayrshire':'3',
-    // Add more counties here
+    'argyll':'2',
+    'aberdeenshire':'1',
   };
 
-  function convertLinks() {
+   function convertLinks() {
     const input = document.getElementById('input').value.trim();
     const lines = input.split(/\n+/);
     const outputLines = [];
     const successUrls = [];
 
     lines.forEach(line => {
-      const match = line.match(/\/([a-z\-]+)-os-name-books-\d{4}-\d{4}\/\1-volume-(\d+)\/(\d+)/i);
+      const match = line.match(/\/([a-z\-]+)-os-name-books-\d{4}(?:-\d{4})?\/\1-volume-(\d+)\/(\d+)/i);
       if (!match) {
         outputLines.push(`<span class="error-line">❌ Could not parse: ${line}</span>`);
         return;
